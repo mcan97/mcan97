@@ -81,11 +81,32 @@ resource "aws_subnet" "mcan97-public-subnet-02" {
   }
 }
 
-# Internet Gateway (İnternet geçidi)
-resource "aws_internet_gateway" "mcan97-igw" {
-  vpc_id = aws_vpc.mcan97-vpc.id
+# VPC (Virtual Private Cloud)
+resource "aws_vpc" "mcan97-vpc" {
+  cidr_block = "10.1.0.0/16"
   tags = {
-    Name = "mcan97-igw"
+    Name = "mcan97-vpc"
+  }
+}
+
+# Public Subnet (Alt ağ)
+resource "aws_subnet" "mcan97-public-subnet-01" {
+  vpc_id                  = aws_vpc.mcan97-vpc.id
+  cidr_block              = "10.1.1.0/24"
+  map_public_ip_on_launch = true
+  availability_zone       = "eu-central-1a"
+  tags = {
+    Name = "mcan97-public-subnet-01"
+  }
+}
+
+resource "aws_subnet" "mcan97-public-subnet-02" {
+  vpc_id                  = aws_vpc.mcan97-vpc.id
+  cidr_block              = "10.1.2.0/24"
+  map_public_ip_on_launch = true
+  availability_zone       = "eu-central-1b"
+  tags = {
+    Name = "mcan97-public-subnet-02"
   }
 }
 
