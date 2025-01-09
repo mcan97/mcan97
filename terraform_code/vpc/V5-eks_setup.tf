@@ -94,7 +94,7 @@ resource "aws_route_table" "mcan97-public-rt" {
   vpc_id = aws_vpc.mcan97-vpc.id
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.mcan97-igw.id
+    gateway_id = aws_subnet_gateway.mcan97-igw.id
   }
 }
 
