@@ -116,6 +116,6 @@ resource "aws_route_table_association" "mcan97-rta-public-subnet-02" {
   module "eks" {
        source = "../eks"
        vpc_id     =     aws_vpc.mcan97-vpc.id
-       subnet_ids = [aws_internet_gateway.mcan97-igw.id,aws_subnet.mcan97-public-subnet-02.id]
+       subnet_ids = [aws_subnet_gateway.mcan97-igw.id,aws_subnet.mcan97-public-subnet-02.id]
        sg_ids = module.sgs.security_group_public
  }
