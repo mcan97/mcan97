@@ -89,12 +89,23 @@ resource "aws_internet_gateway" "mcan97-igw" {
   }
 }
 
+# Internet Gateway (İnternet geçidi)
+resource "aws_internet_gateway" "mcan97-igw" {
+  vpc_id = aws_vpc.mcan97-vpc.id
+  tags = {
+    Name = "mcan97-igw"
+  }
+}
+
 # Route Table (Yol tablosu)
 resource "aws_route_table" "mcan97-public-rt" {
   vpc_id = aws_vpc.mcan97-vpc.id
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.mcan97-igw.id
+  }
+  tags = {
+    Name = "mcan97-public-rt"
   }
 }
 
@@ -108,14 +119,20 @@ resource "aws_route_table_association" "mcan97-rta-public-subnet-02" {
   subnet_id      = aws_subnet.mcan97-public-subnet-02.id
   route_table_id = aws_route_table.mcan97-public-rt.id
 }
-  module "sgs" {
-    source = "../sg_eks"
-    vpc_id     =     aws_vpc.mcan97-vpc.id
- }
 
-  module "eks" {
-       source = "../eks"
-       vpc_id     =     aws_vpc.mcan97-vpc.id
-       subnet_ids = [aws_subnet_gateway.mcan97-igw.id,aws_subnet.mcan97-public-subnet-02.id]
-       sg_ids = module.sgs.security_group_public
- }
+# Güvenlik Grubu Modülü
+module "sgs" {
+  source = "../sg_eks"
+  vpc_id = aws_vpc.mcan97-vpc.id
+}
+
+# EKS Modülü
+module "eks" {
+  source     = "../eks"
+  vpc_id     = aws_vpc.mcan97-vpc.id
+  subnet_ids = [
+    aws_subnet.mcan97-public-subnet-01.id,
+    aws_subnet.mcan97-public-subnet-02.id
+  ]
+  sg_ids = module.sgs.security_group_public
+}
